@@ -26,3 +26,7 @@ Route::middleware('auth:api')->group(function() {
 });
 
 //Route::resource('cities', 'API\CityController')->only(['index']);
+Route::post('/upload', 'API\UploadController@upload');
+// Route::post('/upload', function (Request $request){
+//     print_r($request->file);
+// });
