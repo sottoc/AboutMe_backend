@@ -18,6 +18,8 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::post('/profile', 'API\UtilityController@getProfile');
+    Route::post('/edit_description', 'API\UtilityController@updateDescription');
 
     // Route::resource('cities', 'API\CityController')->except(['index']);
     
@@ -27,5 +29,7 @@ Route::middleware('auth:api')->group(function() {
 
 //Route::resource('cities', 'API\CityController')->only(['index']);
 Route::post('/upload', 'API\UploadController@upload');
+Route::post('/upload_update', 'API\UploadController@uploadSave');
 Route::post('/email_check', 'API\UtilityController@checkEmail');
 Route::post('/username_check', 'API\UtilityController@checkUsername');
+Route::post('/signup', 'API\UtilityController@signup');

@@ -37,9 +37,91 @@ class UtilityController extends Controller
         if(count($data) == 0){
             $response = array('result'=>true, 'data'=>'This username is available!');
         } else{
-            $response = array('result'=>false, 'data'=>'that username is not available');
+            $response = array('result'=>false, 'data'=>'That username is not available');
         }
         return json_encode($response);
+    }
+
+    public function signup(Request $request)
+    {
+        $email_address = $request->email_address;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
+        $image = $request->image;
+        $location = $request->location;
+        $interests = $request->interests;
+        $roles = $request->roles;
+        $spotlight = $request->spotlight;
+        $spotlight_link = $request->spotlight_link;
+        $template = $request->template;
+        $username = $request->username;
+        $password = $request->password;
+        $color = "#ffffff";
+        
+        $data = DB::table('users')->where('username', '=', $username)->get();
+        if(count($data) == 0){
+            // insert in users
+            DB::table('users')->insert([
+                'username' => $username,
+                'email' => $email_address,
+                'password' => bcrypt($password)
+            ]);
+        }
+        
+        $data = DB::table('profile')->where('username', '=', $username)->get();
+        if(count($data) == 0){
+            // insert in profile
+            DB::table('profile')->insert([
+                'username' => $username,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'first_name' => $first_name,
+                'avatar' => $image,
+                'location' => $location,
+                'interests' => $interests,
+                'roles' => $roles,
+                'spotlight' => $spotlight,
+                'spotlight_link' => $spotlight_link,
+                'template' => $template,
+                'color' => $color
+            ]);
+            $response = array('result'=>true, 'A user added!');
+            return json_encode($response);
+        }
+
+        if(count($data) >= 1){
+            $response = array('result'=>false, 'A user already exist!');
+            return json_encode($response);
+        }
+        
+    }
+
+    public function getProfile(Request $request)
+    {
+        $username = $request->username;
+        $data = DB::table('profile')->where('username', '=', $username)->get();
+        return json_encode($data);
+    }
+
+    public function updateDescription(Request $request)
+    {
+        $username = $request->username;
+        $description = $request->description;
+        $record = [
+            'username' => $username,
+            'description' => $description
+        ];
+        $data = DB::table('description')->where('username', '=', $username)->get();
+        
+        if(count($data) == 0){
+            DB::table('description')->insert([
+                'username' => $username,
+                'description' => $description
+            ]);
+        } else{
+            DB::table('description')->where('username', '=', $username)->update(array('description' => $description));
+        }
+        return json_encode($record);
     }
 
     /**
