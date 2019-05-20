@@ -19,7 +19,9 @@ Route::middleware('auth:api')->group(function() {
         return $request->user();
     });
     Route::post('/profile', 'API\UtilityController@getProfile');
+    Route::post('/extrainfo', 'API\UtilityController@getExtraInfo');
     Route::post('/edit_description', 'API\UtilityController@updateDescription');
+    Route::post('/update_design', 'API\UtilityController@updateDesign');
 
     // Route::resource('cities', 'API\CityController')->except(['index']);
     

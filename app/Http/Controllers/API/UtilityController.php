@@ -103,6 +103,13 @@ class UtilityController extends Controller
         return json_encode($data);
     }
 
+    public function getExtraInfo(Request $request)
+    {
+        $username = $request->username;
+        $data = DB::table('extrainfo')->where('username', '=', $username)->get();
+        return json_encode($data);
+    }
+
     public function updateDescription(Request $request)
     {
         $username = $request->username;
@@ -122,6 +129,31 @@ class UtilityController extends Controller
             DB::table('description')->where('username', '=', $username)->update(array('description' => $description));
         }
         return json_encode($record);
+    }
+
+    function updateDesign(Request $request){
+        $username = $request->username;
+        $template = $request->template;
+        $color = $request->color;
+        DB::table('profile')->where('username', '=', $username)->update(array('template' => $template, 'updated_at' => date('Y-m-d H:i:s')));
+        $data = DB::table('extrainfo')->where([
+            ['username', '=', $username],
+            ['key', '=', 'color'],
+        ])->get();
+        if(count($data) == 0){
+            DB::table('extrainfo')->insert([
+                'username' => $username,
+                'key' => 'color',
+                'value' => $color,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+        } else {
+            DB::table('extrainfo')->where([
+                ['username', '=', $username],
+                ['key', '=', 'color'],
+            ])->update(array('value' => $color, 'updated_at' => date('Y-m-d H:i:s')));
+        }
+        return json_encode(['data'=> "Success"]);
     }
 
     /**
